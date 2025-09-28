@@ -1,7 +1,26 @@
+
+
+<div align="center">
+
+
 # [NeurIPS '25] RHYTHM: Reasoning with Hierarchical Temporal Tokenization for Human Mobility
+
+[![arXiv](https://img.shields.io/badge/arXiv-RHYTHM-ff0000.svg?style=for-the-badge)]()  [![Github](https://img.shields.io/badge/RHYTHM-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/he-h/rhythm)
+</div>
 
 
 This repository implements the RHYTHM framework for spatio-temporal mobility prediction using pre-computed semantic embeddings.
+
+
+The repo contains: 
+1. **Official Implementation**  
+The official implementation of RHYTHM: Reasoning with Hierarchical Temporal Tokenization for Human Mobility.
+
+
+
+
+
+
 
 ## Prerequisites
 
