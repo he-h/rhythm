@@ -29,6 +29,16 @@ The official implementation of RHYTHM: Reasoning with Hierarchical Temporal Toke
 - Hugging Face Transformers
 - Other dependencies listed in `requirements.txt`
 
+```
+# create and activate virtual python environment
+conda create -n rhythm python=3.10
+conda activate rhythm
+pip install transformers
+pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+
+# install required packages
+pip install -r requirements.txt
+```
 
 ## Usage
 
