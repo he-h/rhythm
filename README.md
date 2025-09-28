@@ -43,10 +43,13 @@ We appreciate the following GitHub repos a lot for their valuable code and effor
 - Time-Series-Library (https://github.com/thuml/Time-Series-Library)
 - AutoTimes (https://github.com/thuml/AutoTimes)
 - ST-MoE-BERT (https://github.com/he-h/ST-MoE-BERT)
+- LLM-Mob (https://github.com/xlwang233/LLM-Mob)
 
 ## Citation
 
-If you find this repo helpful, please cite our paper. 
+If you have any questions regarding our paper or code, please feel free to start an issue.
+
+If you use RHYTHM in your work, please kindly cite our paper:
 
 ```
 @article{
