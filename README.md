@@ -3,7 +3,7 @@
 <div align="center">
 
 
-# [NeurIPS '25] RHYTHM: Reasoning with Hierarchical Temporal Tokenization for Human Mobility
+# RHYTHM: Reasoning with Hierarchical Temporal Tokenization for Human Mobility
 
 [![arXiv](https://img.shields.io/badge/arXiv-RHYTHM-ff0000.svg?style=for-the-badge)]()  [![Github](https://img.shields.io/badge/RHYTHM-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/he-h/rhythm)
 </div>
@@ -24,7 +24,7 @@ The official implementation of RHYTHM: Reasoning with Hierarchical Temporal Toke
 
 ## Prerequisites
 
-- Python 3.9+
+- Python 3.10+
 - PyTorch
 - Hugging Face Transformers
 - Other dependencies listed in `requirements.txt`
@@ -72,7 +72,6 @@ We appreciate the following GitHub repos a lot for their valuable code and effor
 - Time-Series-Library (https://github.com/thuml/Time-Series-Library)
 - AutoTimes (https://github.com/thuml/AutoTimes)
 - ST-MoE-BERT (https://github.com/he-h/ST-MoE-BERT)
-- LLM-Mob (https://github.com/xlwang233/LLM-Mob)
 
 ## Citation
 

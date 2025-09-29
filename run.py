@@ -117,12 +117,8 @@ if __name__ == '__main__':
     
     if args.task_name == 'hm_classification':
         Exp = Exp_Classification
-    elif args.task_name == 'mobllm':
-        Exp = Exp_Classification2
-    elif args.task_name == 'test':
-        Exp = Exp_Test
     else:
-        Exp = Exp_Long_Term_Forecast
+        raise NotImplementedError
 
     if args.is_training:
         for ii in range(args.itr):

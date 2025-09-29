@@ -2,7 +2,7 @@ import argparse
 import torch
 import os
 from tqdm import tqdm
-from models.Preprocess_Llama import Model
+from models.preprocess import Model
 
 from data_provider.data_loader import Dataset_Preprocess_Foursquare, Dataset_Preprocess, Dataset_Preprocess_YJ,\
     Dataset_Preprocess_YJ_Token, Dataset_Preprocess_US_Token, Dataset_Preprocess_US
@@ -13,20 +13,18 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='AutoTimes Preprocess')
     parser.add_argument('--gpu', type=int, default=0, help='gpu id')
     parser.add_argument('--llm_ckp_dir', type=str, default='meta-llama/Llama-3.1-8B', help='llm checkpoints dir')
-    parser.add_argument('--dataset', type=str, default='foursquare', 
-                        help='dataset to preprocess, options:[ETTh1, electricity, weather, traffic, foursquare]')
-    parser.add_argument('--city', type=str, default='NYC', help='city name')
-    parser.add_argument('--flag', type=str, default='train', help='train/val/test')
+    parser.add_argument('--dataset', type=str, default='yj', 
+                        help='dataset to preprocess')
+    parser.add_argument('--city', type=str, default='D', help='city name')
     args = parser.parse_args()
     print(args)
     
     flags = ['train', 'test', 'val']
-    # flags = ['test']
     model = Model(args)
 
     seq_len = 7*48
     label_len = 6*48
-    pred_len = 48
+    pred_len = 1*48
     
     print(f'Preprocessing {args.dataset} dataset')
     

@@ -48,7 +48,6 @@ class Model(nn.Module):
         # Spatial embeddings
         self.place_embed = nn.Embedding(configs.num_classes, place_embeds_size)
         self.latlon_proj = nn.Sequential(
-            # nn.LayerNorm(6),
             nn.Linear(6, latlon_emb_dim),
             nn.GELU(),
             nn.LayerNorm(latlon_emb_dim)
@@ -60,14 +59,12 @@ class Model(nn.Module):
         
         # Projection to LLaMA hidden dimension
         self.temporal2hidden = nn.Sequential(
-            # nn.LayerNorm(self.temporal_emb_dim),
             nn.Linear(self.temporal_emb_dim, self.hidden_dim),
             nn.GELU(),
             nn.Dropout(drop_rate)
         )
         
         self.spatial2hidden = nn.Sequential(
-            # nn.LayerNorm(self.spatial_emb_dim),
             nn.Linear(self.spatial_emb_dim, self.hidden_dim),
             nn.GELU(),
             nn.Dropout(drop_rate)
@@ -399,7 +396,7 @@ class ResidualMLPBlock(nn.Module):
         return x + self.mlp(self.norm(x))
     
 class PoolingModule(nn.Module):
-    def __init__(self, hidden_dim, seq_len=self.token_len, pool_type='linear', dropout=0.1):
+    def __init__(self, hidden_dim, seq_len=token_len, pool_type='linear', dropout=0.1):
         """
         A pooling module that supports multiple pooling strategies.
         

@@ -1,6 +1,6 @@
 model_name=rhythm
-export HF_TOKEN=''
-export HF_HOME=""
+export HF_TOKEN="your_huggingface_token"
+export HF_HOME="your_huggingface_cache_directory"
 
 # training one model with a context length
 python -u run.py \
