@@ -11,16 +11,19 @@
 
 The official implementation of [**RHYTHM**: Reasoning with Hierarchical Temporal Tokenization for Human Mobility](https://arxiv.org/abs/2509.23115).
 
-- [1. Introduction](#1-introduction)
-- [2. Prerequisites](#2-prerequisites)
-- [3. Data](#3-data)
-- [4. Usage](#4-usage)
-  - [4.1 Preprocess](#41-preprocess)
-  - [4.2 Training](#42-training)
-  - [4.3 Evaluate](#43-evaluate)
-- [5. Acknowledgement](#5-acknowledgement)
-- [6. Citation](#6-citation)
-- [7. Contact](#7-contact)
+## Contents
+
+- [**RHYTHM**: Reasoning with Hierarchical Temporal Tokenization for Human Mobility](https://arxiv.org/abs/2509.23115) 
+  - [1. Introduction](#1)
+  - [2. Prerequisites](#2-prerequisites)
+  - [3. Data](#3-data)
+  - [4. Usage](#4-usage)
+    - [4.1 Preprocess](#41-preprocess)
+    - [4.2 Training](#42-training)
+    - [4.3 Evaluate](#43-evaluate)
+  - [5. Acknowledgement](#5-acknowledgement)
+  - [6. Citation](#6-citation)
+  - [7. Contact](#7-contact)
  
 
 
