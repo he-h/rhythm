@@ -22,9 +22,9 @@ def check_for_nan(tensor, name):
     if torch.isnan(tensor).any():
         print(f"NaN found in {name}")
 
-class Exp_Classification(Exp_Basic):
+class Exp_Prediction(Exp_Basic):
     def __init__(self, args):
-        super(Exp_Classification, self).__init__(args)
+        super(Exp_Prediction, self).__init__(args)
         wandb.init(
             project="hummob",  # Change project name as needed
             config={                              # Log hyperparameters
@@ -33,7 +33,7 @@ class Exp_Classification(Exp_Basic):
                 "epochs": self.args.train_epochs,
                 "model": self.args.model,
             },
-            mode="disabled"
+            mode="disabled" # Change to "online" to enable logging
         )
         train_data, train_loader = self._get_data(flag='train')
         self.args.num_classes = train_data.get_num_class()
@@ -79,8 +79,6 @@ class Exp_Classification(Exp_Basic):
         criterion = nn.CrossEntropyLoss()
         if self.args.data == 'yj':
             criterion = nn.CrossEntropyLoss(ignore_index=40000, label_smoothing=self.args.label_smoothing)
-        elif self.args.data == 'us':
-            criterion = nn.CrossEntropyLoss(ignore_index=0)
         return criterion
 
     

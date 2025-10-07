@@ -18,9 +18,9 @@ The official implementation of [**RHYTHM**: Reasoning with Hierarchical Temporal
   - [2. Prerequisites](#prerequisites)
   - [3. Data](#data)
   - [4. Usage](#usage)
-    - [4.1 Preprocess](#1-preprocess)
+    - [4.1 Preprocessing](#1-preprocessing)
     - [4.2 Training](#2-training)
-    - [4.3 Evaluate](#3-evaluate)
+    - [4.3 Evaluation](#3-evaluation)
   - [5. Acknowledgement](#acknowledgement)
   - [6. Citation](#citation)
   - [7. Contact](#contact)
@@ -46,7 +46,10 @@ The official implementation of [**RHYTHM**: Reasoning with Hierarchical Temporal
 # create and activate virtual python environment
 conda create -n rhythm python=3.10
 conda activate rhythm
+
 pip install transformers
+
+# install pytorch with cuda support (change cu126 to your cuda version if needed)
 pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu126
 
 # install required packages
@@ -55,13 +58,13 @@ pip install -r requirements.txt
 
 ## Data
 
-Our experiments are conducted on the [YJMob100k](https://www.nature.com/articles/s43588-024-00650-3) dataset.
+Our experiments are conducted on the [YJMob100k](https://www.nature.com/articles/s43588-024-00650-3) dataset. To reproduce results, please download the dataset and place it under `dataset/yj/`.
 
 ## Usage
 
 
 
-### 1. Preprocess
+### 1. Preprocessing
 
 First, preprocess your raw trajectory files and compute semantic embeddings offline:
 
@@ -75,18 +78,19 @@ Trained model outputs, logs, and final metrics are saved under the log/ director
 You can train the model on different cities by running the following scripts:
 
 ```bash
-# Train on City B
-bash scripts/b.sh
-
-# Train on City C
-bash scripts/c.sh
-
-# Train on City D
-bash scripts/d.sh
+# Training
+bash scripts/train.sh
 ```
 
-### 3. Evaluate
-Coming soon...
+### 3. Evaluation
+You can evaluate the trained model on different cities by running the following scripts:
+
+```bash
+# Evaluation
+bash scripts/evaluate.sh
+```
+
+
 
 ## Acknowledgement
 
@@ -104,14 +108,11 @@ If you have any questions regarding our paper or code, please feel free to start
 If you use RHYTHM in your work, please kindly cite our paper:
 
 ```
-@misc{he2025rhythmreasoninghierarchicaltemporal,
-      title={RHYTHM: Reasoning with Hierarchical Temporal Tokenization for Human Mobility}, 
-      author={Haoyu He and Haozheng Luo and Yan Chen and Qi R. Wang},
-      year={2025},
-      eprint={2509.23115},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG},
-      url={https://arxiv.org/abs/2509.23115}, 
+@article{he2025rhythm,
+  title={RHYTHM: Reasoning with Hierarchical Temporal Tokenization for Human Mobility},
+  author={He, Haoyu and Luo, Haozheng and Chen, Yan and Wang, Qi R},
+  journal={arXiv preprint arXiv:2509.23115},
+  year={2025}
 }
 ```
 

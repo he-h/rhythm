@@ -37,8 +37,8 @@ class Model(nn.Module):
         place_embeds_size = configs.place_embeds_size
         drop_rate = configs.drop_rate
         
-        self.token_len = configs.token_len
-        self.token_num = configs.token_num
+        self.token_len = int(configs.token_len)
+        self.token_num = int(configs.seq_len / configs.token_len)  # Number of days in historical data
         
         # Temporal embeddings
         self.user_embed = nn.Embedding(configs.num_users, user_embeds_size)
@@ -54,8 +54,8 @@ class Model(nn.Module):
         )
         
         # Calculate embedding dimensions
-        self.temporal_emb_dim = user_embeds_size + times_embeds_size * 2  # 384
-        self.spatial_emb_dim = latlon_emb_dim + place_embeds_size  # 384
+        self.temporal_emb_dim = user_embeds_size + times_embeds_size * 2  
+        self.spatial_emb_dim = latlon_emb_dim + place_embeds_size  
         
         # Projection to LLaMA hidden dimension
         self.temporal2hidden = nn.Sequential(
@@ -80,8 +80,8 @@ class Model(nn.Module):
         )
         self.num_places = configs.num_classes
         self.classifier = ProjectionLayer(self.hidden_dim, self.num_places)
-        self.hierarchical_attention = HierarchicalAttention(self.hidden_dim)
-        self.segment_attention = MultiLayerAttentionEncoder(self.hidden_dim, num_layers=configs.num_layers)
+        self.hierarchical_attention = HierarchicalAttention(self.hidden_dim, token_num=int(self.token_num), token_len=self.token_len)
+        self.segment_attention = MultiLayerAttentionEncoder(self.hidden_dim, num_layers=configs.num_attn_layers, num_heads=configs.transformer_heads, dropout=drop_rate)
         
         # Learnable parameters for prompt fusion
         self.prompt_fusion1 = nn.Parameter(torch.tensor(0.0))
@@ -366,11 +366,13 @@ class MultiLayerAttentionEncoder(nn.Module):
     
     
 class HierarchicalAttention(nn.Module):
-    def __init__(self, hidden_dim):
+    def __init__(self, hidden_dim, token_num=7, token_len=48):
         super().__init__()
         self.global_attention = MultiLayerAttentionEncoder(hidden_dim)
-        
         self.local_attention = MultiLayerAttentionEncoder(hidden_dim)
+        
+        self.token_num = token_num
+        self.token_len = token_len
         
     def forward(self, x):
         x = self.global_attention(x)
@@ -396,7 +398,7 @@ class ResidualMLPBlock(nn.Module):
         return x + self.mlp(self.norm(x))
     
 class PoolingModule(nn.Module):
-    def __init__(self, hidden_dim, seq_len=token_len, pool_type='linear', dropout=0.1):
+    def __init__(self, hidden_dim, seq_len=48, pool_type='linear', dropout=0.1):
         """
         A pooling module that supports multiple pooling strategies.
         

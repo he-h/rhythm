@@ -4,15 +4,13 @@ import os
 from tqdm import tqdm
 from models.preprocess import Model
 
-from data_provider.data_loader import Dataset_Preprocess_Foursquare, Dataset_Preprocess, Dataset_Preprocess_YJ,\
-    Dataset_Preprocess_YJ_Token, Dataset_Preprocess_US_Token, Dataset_Preprocess_US
-from data_provider.preprocess_data import preprocess_foursquare_data, preprocess_yj_data
+from data_provider.data_loader import Dataset_Preprocess_YJ, Dataset_Preprocess_YJ_Token
 from torch.utils.data import DataLoader
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='AutoTimes Preprocess')
     parser.add_argument('--gpu', type=int, default=0, help='gpu id')
-    parser.add_argument('--llm_ckp_dir', type=str, default='meta-llama/Llama-3.1-8B', help='llm checkpoints dir')
+    parser.add_argument('--llm_ckp_dir', type=str, default='meta-llama/Llama-3.2-1B', help='llm checkpoints dir')
     parser.add_argument('--dataset', type=str, default='yj', 
                         help='dataset to preprocess')
     parser.add_argument('--city', type=str, default='D', help='city name')
@@ -46,7 +44,7 @@ if __name__ == '__main__':
             city=args.city)
     
         
-    batch_size = 128     
+    batch_size = 64    
     
     data_loader_token = DataLoader(
         data_set_token,
@@ -79,7 +77,7 @@ if __name__ == '__main__':
             y_list.append(output.detach().cpu())
         
         y_result = torch.cat(y_list, dim=0)
-        print(f"y_result shape: {y_result.shape}")
+        print(f"y_result shape: {y_result.shape} for {flag}")
         torch.save(y_result, save_dir_path + f'/{args.dataset}/{args.dataset}_{args.city}_{seq_len}_{label_len}_{pred_len}_{flag}_{model_abbr}_y.pt')
     
     print(f'{args.dataset} dataset city {args.city} preprocessing finished')

@@ -4,7 +4,8 @@ import random
 import numpy as np
 import torch
 import torch.distributed as dist
-from exp.exp_classification import Exp_Classification
+from exp.exp_prediction import Exp_Prediction
+from exp.exp_evaluation import Exp_Evaluation
 
 if __name__ == '__main__':
     fix_seed = 42
@@ -36,10 +37,10 @@ if __name__ == '__main__':
 
 
     # forecasting task
-    parser.add_argument('--seq_len', type=int, default=672, help='input sequence length')
-    parser.add_argument('--pred_len', type=int, default=96, help='input sequence length')
-    parser.add_argument('--label_len', type=int, default=576, help='label length')
-    parser.add_argument('--token_len', type=int, default=96, help='token length')
+    parser.add_argument('--seq_len', type=int, default=336, help='input sequence length')
+    parser.add_argument('--pred_len', type=int, default=48, help='input sequence length')
+    parser.add_argument('--label_len', type=int, default=336, help='label length')
+    parser.add_argument('--token_len', type=int, default=48, help='token length')
     parser.add_argument('--test_seq_len', type=int, default=672, help='test seq len')
     parser.add_argument('--test_label_len', type=int, default=576, help='test label len')
     parser.add_argument('--test_pred_len', type=int, default=96, help='test pred len')
@@ -48,10 +49,12 @@ if __name__ == '__main__':
     # model define
     parser.add_argument('--dropout', type=float, default=0.1, help='dropout')
     parser.add_argument('--feature_decode_dim', type=int, default=5)
-    parser.add_argument('--times_embeds_size', type=int, default=64)
-    parser.add_argument('--place_embeds_size', type=int, default=128)
-    parser.add_argument('--user_embeds_size', type=int, default=64)
+    parser.add_argument('--times_embeds_size', type=int, default=128)
+    parser.add_argument('--place_embeds_size', type=int, default=256)
+    parser.add_argument('--user_embeds_size', type=int, default=128)
+    parser.add_argument('--latlon_emb_dim', type=int, default=128)
     
+    # model LLM
     parser.add_argument('--llm_model', type=str, default='LLAMA', help='LLM model') # LLAMA, GPT2, BERT
     parser.add_argument('--llm_layers', type=int, default=6)
     parser.add_argument('--prompt_domain', type=int, default=0, help='')
@@ -63,10 +66,12 @@ if __name__ == '__main__':
     parser.add_argument('--mlp_hidden_layers', type=int, default=2, help='mlp hidden layers')
     parser.add_argument('--mlp_activation', type=str, default='tanh', help='mlp activation')
     parser.add_argument('--d_model', type=int, default=256, help='mlp hidden dim')
+    parser.add_argument('--num_attn_layers', type=int, default=2, help='num attn layers')
+    parser.add_argument('--transformer_heads', type=int, default=16, help='num attn heads')
     parser.add_argument('--factor', type=int, default=1, help='attn factor')
     parser.add_argument('--hidden_size', type=int, default=256, help='hidden size')
+    parser.add_argument('--drop_rate', type=float, default=0.1, help='drop rate')
 
-    parser.add_argument('--transformer_heads', type=int, default=8)
     parser.add_argument('--d_ff', type=int, default=2048, help='dimension of fcn')
     parser.add_argument('--enc_in', type=int, default=7, help='encoder input size')
 
@@ -115,8 +120,10 @@ if __name__ == '__main__':
                                 rank=rank)
         torch.cuda.set_device(local_rank)
     
-    if args.task_name == 'hm_classification':
-        Exp = Exp_Classification
+    if args.task_name == 'prediction':
+        Exp = Exp_Prediction
+    elif args.task_name == 'evaluation':
+        Exp = Exp_Evaluation
     else:
         raise NotImplementedError
 
@@ -130,7 +137,7 @@ if __name__ == '__main__':
                 args.model_id,
                 args.model,
                 args.data,
-                args.llm_ckp_dir[-2:], # Llama-3.2-1B -> 1B
+                args.llm_ckp_dir[-2:],
                 args.seq_len,
                 args.label_len,
                 args.token_len,

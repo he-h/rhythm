@@ -172,3 +172,19 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+dataset/
+tmp.py
+scripts/test.sh
+scripts/test_test.sh
+scripts/train_test.sh
+scripts/preprocess_test.sh
+scripts/b.sh
+scripts/c.sh
+scripts/d.sh
+
+preprocess.sh
+
+result_classification_report.txt
+
+checkpoints/

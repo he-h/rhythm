@@ -2,10 +2,10 @@ import os
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
-from math import ceil, floor
+from math import ceil
 
     
-def preprocess_yj_data(root_path, city='D', scale=False, size=(7*48, 6*48, 1*48), interval=1*48, flag='train'):
+def preprocess_yj_data(root_path, city='D', size=(7*48, 6*48, 1*48), interval=1*48, flag='train'):
     """
     Preprocesses the YjMob100k dataset and saves it as an .npz file.
     input_seq_feature: ['User ID', 'time slot', 'DayOfWeek', 'Day', 'Latitude', 'Longitude', 'Place ID']
@@ -14,7 +14,7 @@ def preprocess_yj_data(root_path, city='D', scale=False, size=(7*48, 6*48, 1*48)
 
     Args:
         root_path (str): Root directory path where the dataset is located.
-        city (str): City name, ['A', 'B', 'C', 'D']. 100k, 25k, 20k, 6k, -3k
+        city (str): City name
         scale (bool): Whether to scale the numerical features.
         output_filename (str): Name of the output .npz file.
     """
@@ -35,13 +35,6 @@ def preprocess_yj_data(root_path, city='D', scale=False, size=(7*48, 6*48, 1*48)
     elif flag == 'test':
         start_day, end_day = total_days * 0.9 - input_seq_length, total_days
         
-    if city == 'BOS':
-        if flag == 'train':
-            start_day, end_day = 0, ceil(total_days * 0.6)
-        elif flag == 'test':
-            start_day, end_day = total_days - 14, total_days
-        elif flag == 'val':
-            start_day, end_day = ceil(total_days * 0.6) - 7, total_days - 7
     
     start_day = ceil(start_day)
     dataset = dataset[dataset['d'].between(start_day, end_day)]
@@ -59,7 +52,7 @@ def preprocess_yj_data(root_path, city='D', scale=False, size=(7*48, 6*48, 1*48)
     grouped_data = dataset.groupby('uid')
     print(f"Number of unique uid: {len(grouped_data)}")
     set_uids = np.arange(total_users)
-    print(f"Missing uid is {set_uids[~np.in1d(set_uids, dataset['uid'].unique())]}") # 1785 4204
+    print(f"Missing uid is {set_uids[~np.in1d(set_uids, dataset['uid'].unique())]}")
 
     for uid, uid_df in tqdm(grouped_data, desc="Generating sequences"):
         full_seq_x = generate_yj_sequence(uid_df, day_values)
@@ -177,10 +170,11 @@ def normalize_uids(df, uid_col='uid'):
 
     return df
 
-def load_yj_df(city='D'):
+def load_yj_df(city, root_path=''):
     '''
-    City B remove uid [1785 4204] with incomplete data
+    load YjMob100k dataset
     '''
+    data_path = 'YOUR_PATH_HERE'
     if city in ['B', 'C', 'D']:
         data_path = os.path.join(root_path, f"dataset/yj/city{city}_challengedata.csv.gz")
     elif city == 'A':
@@ -191,11 +185,12 @@ def load_yj_df(city='D'):
     print(f"Loading data from {data_path}")
     dataset = pd.read_csv(data_path, compression='gzip')
     
-        
     dataset = normalize_uids(dataset) 
+    total_users = dataset['uid'].nunique()
     
-    if city in ['A', 'B', 'C', 'D']:
-        total_users = dataset['uid'].nunique() - 3000 # Remove last 3000 users # TODO: change here
+    if city in ['A', 'B', 'C', 'D'] and total_users > 3000:
+        # Remove the last 3,000 users from YJMob100k due to incomplete data.
+        total_users = total_users - 3000
         print(f"Total users: {total_users}")
         dataset = dataset[dataset['uid'] < total_users]
     else:
@@ -216,20 +211,9 @@ if __name__ == "__main__":
     size = (seq_len, label_len, pred_len)
     root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
     
-    city = 'B'
-    yj_full4prompt(root_path, city=city)
-    preprocess_yj_data(root_path, city=city, scale=False, size=size, interval=interval, flag='train')
-    preprocess_yj_data(root_path, city=city, scale=False, size=size, interval=interval, flag='val')
-    preprocess_yj_data(root_path, city=city, scale=False, size=size, interval=interval, flag='test')
-    
     city = 'C'
     yj_full4prompt(root_path, city=city)
-    preprocess_yj_data(root_path, city=city, scale=False, size=size, interval=interval, flag='train')
-    preprocess_yj_data(root_path, city=city, scale=False, size=size, interval=interval, flag='val')
-    preprocess_yj_data(root_path, city=city, scale=False, size=size, interval=interval, flag='test')
-    
-    city = 'D'
-    yj_full4prompt(root_path, city=city)
-    preprocess_yj_data(root_path, city=city, scale=False, size=size, interval=interval, flag='train')
-    preprocess_yj_data(root_path, city=city, scale=False, size=size, interval=interval, flag='val')
-    preprocess_yj_data(root_path, city=city, scale=False, size=size, interval=interval, flag='test')
+    preprocess_yj_data(root_path, city=city, size=size, interval=interval, flag='train')
+    preprocess_yj_data(root_path, city=city, size=size, interval=interval, flag='val')
+    preprocess_yj_data(root_path, city=city, size=size, interval=interval, flag='test')
+

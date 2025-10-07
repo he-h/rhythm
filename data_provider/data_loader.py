@@ -4,9 +4,7 @@ import numpy as np
 import pandas as pd
 import torch
 from torch.utils.data import Dataset
-from data_provider.m4 import M4Dataset, M4Meta
-from sklearn.preprocessing import StandardScaler
-from utils.tools import convert_tsf_to_dataframe, format_timedelta, convert_time_slot_to_str
+from utils.tools import convert_time_slot_to_str
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -17,8 +15,6 @@ class Dataset_YJ(Dataset):
                  scale=False, city=None, **kwargs):
         self.preprocessed_filename = f"yj_{city}_size_336_288_48_{flag}.npz"
         model_abbrev = llm_ckp_dir.split('/')[-1]
-        # self.preprocessed_prompt_filename_x = f"yj_{city}_{size[0]}_{size[1]}_{size[2]}_1B_x.pt"
-        # self.preprocessed_prompt_filename_y = f"yj_{city}_{size[0]}_{size[1]}_{size[2]}_{flag}_1B_y.pt"
         self.preprocessed_prompt_filename_x = f"yj_{city}_{size[0]}_{size[1]}_{size[2]}_{model_abbrev}_x.pt"
         self.preprocessed_prompt_filename_y = f"yj_{city}_{size[0]}_{size[1]}_{size[2]}_{flag}_{model_abbrev}_y.pt"
         self.seq_len = size[0] if size and len(size) > 0 else 40
@@ -34,7 +30,6 @@ class Dataset_YJ(Dataset):
         self.set_type = type_map[flag]
 
         self.root_path = root_path
-        assert city in ['A', 'B', 'C', 'D', 'BOS']
         self.city = city
         self.preprocessed_path = os.path.join(root_path, f"{self.preprocessed_filename}")
         self.embed_prompt_path_x = os.path.join(root_path, f"{self.preprocessed_prompt_filename_x}")
@@ -42,7 +37,6 @@ class Dataset_YJ(Dataset):
         print(f"Loading preprocessed data from {self.preprocessed_path}")
 
         self.__read_data__()
-        # self.__split_data__()  # Perform the split
         print(f"Loaded {self.num_samples} sequences from {self.flag} set.")
 
     def __read_data__(self):
@@ -133,7 +127,6 @@ class Dataset_Preprocess(Dataset):
         self.data_stamp = df_stamp['date'].values
         self.data_stamp = [str(x) for x in self.data_stamp]
         
-    # TODO: Prompt
     def __getitem__(self, index):
         s_begin = index % self.tot_len
         s_end = s_begin + self.token_len
@@ -168,7 +161,6 @@ class Dataset_Preprocess_YJ_Token(Dataset):
 
         self.root_path = root_path
         
-        assert city in ['A', 'B', 'C', 'D', 'BOS']
         self.city = city
         self.preprocessed_path = os.path.join(root_path, f"dataset/yj/{preprocessed_filename}")
         print(f"Loading preprocessed data from {self.preprocessed_path}")
@@ -194,10 +186,8 @@ class Dataset_Preprocess_YJ_Token(Dataset):
         day_of_week_id = day_id % 7
         
         # Retrieve the data
-        if self.city == 'BOS':
-            day_of_week_dict = {0: 'Wednesday', 1: 'Thursday', 2: 'Friday', 3: 'Saturday', 4: 'Sunday', 5: 'Monday', 6: 'Tuesday'}
-        else:
-            day_of_week_dict = {0: 'Sunday', 1: 'Monday', 2: 'Tuesday', 3: 'Wednesday', 4: 'Thursday', 5: 'Friday', 6: 'Saturday'}
+
+        day_of_week_dict = {0: 'Sunday', 1: 'Monday', 2: 'Tuesday', 3: 'Wednesday', 4: 'Thursday', 5: 'Friday', 6: 'Saturday'}
         
         input_feat = self.data[user_id, day_id]  # [seq_len, 7]
         
@@ -333,7 +323,7 @@ class Dataset_Preprocess_YJ_Token(Dataset):
     
 class Dataset_Preprocess_YJ(Dataset):
     def __init__(self, root_path, flag='train', size=None,
-                 scale=False, city='D'):
+                 scale=False, dataset='yj', city='D'):
         self.seq_len = size[0] if size and len(size) > 0 else 7*48
         self.label_len = size[1] if size and len(size) > 1 else 6*48
         self.pred_len = size[2] if size and len(size) > 2 else 48
@@ -350,7 +340,6 @@ class Dataset_Preprocess_YJ(Dataset):
 
         self.root_path = root_path
         
-        assert city in ['A', 'B', 'C', 'D', 'BOS']
         self.city = city
         self.preprocessed_path = os.path.join(root_path, f"dataset/yj/{preprocessed_filename}")
         print(f"Loading preprocessed data from {self.preprocessed_path}")
@@ -375,10 +364,8 @@ class Dataset_Preprocess_YJ(Dataset):
         Generate an enhanced prompt that clearly defines the mobility prediction task.
         """
         # Retrieve the data
-        if self.city == 'BOS':
-            day_of_week_dict = {0: 'Wednesday', 1: 'Thursday', 2: 'Friday', 3: 'Saturday', 4: 'Sunday', 5: 'Monday', 6: 'Tuesday'}
-        else:
-            day_of_week_dict = {0: 'Sunday', 1: 'Monday', 2: 'Tuesday', 3: 'Wednesday', 4: 'Thursday', 5: 'Friday', 6: 'Saturday'}
+
+        day_of_week_dict = {0: 'Sunday', 1: 'Monday', 2: 'Tuesday', 3: 'Wednesday', 4: 'Thursday', 5: 'Friday', 6: 'Saturday'}
         
         input_feat = self.input_seq_feature[index]  # [seq_len, 7]
         user_id = int(input_feat[0, 0])

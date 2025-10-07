@@ -4,13 +4,13 @@ export HF_HOME="your_huggingface_cache_directory"
 
 # training one model with a context length
 python -u run.py \
-  --task_name hm_classification \
+  --task_name prediction \
   --is_training 1 \
   --root_path ./dataset/yj \
   --model_id yj_336_48 \
   --model $model_name \
-  --data yj \
-  --city B \
+  --data YOUR_DATASET_NAME \
+  --city YOUR_CITY_NAME \
   --seq_len 336 \
   --label_len 288 \
   --token_len 48 \
@@ -18,7 +18,7 @@ python -u run.py \
   --test_label_len 288 \
   --test_pred_len 48 \
   --batch_size 64 \
-  --learning_rate 5e-4 \
+  --learning_rate 1e-4 \
   --mlp_hidden_layers 4 \
   --mlp_activation gelu \
   --train_epochs 30 \
@@ -33,6 +33,3 @@ python -u run.py \
   --enable_early_stopping \
   --grad_clip \
   --use_amp \
-
-
-  # number of attention layers should be count here
