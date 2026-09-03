@@ -108,11 +108,13 @@ If you have any questions regarding our paper or code, please feel free to start
 If you use RHYTHM in your work, please kindly cite our paper:
 
 ```
-@article{he2025rhythm,
-  title={RHYTHM: Reasoning with Hierarchical Temporal Tokenization for Human Mobility},
-  author={He, Haoyu and Luo, Haozheng and Chen, Yan and Wang, Qi R},
-  journal={arXiv preprint arXiv:2509.23115},
-  year={2025}
+@article{he2026rhythm,
+  title={RHYTHM: Reasoning with hierarchical temporal tokenization for human mobility},
+  author={He, Haoyu and Luo, Haozheng and Chen, Yan and Wang, Qi},
+  journal={Advances in Neural Information Processing Systems},
+  volume={38},
+  pages={84700--84730},
+  year={2026}
 }
 ```
 
